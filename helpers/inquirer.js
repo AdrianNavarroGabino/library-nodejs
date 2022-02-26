@@ -51,6 +51,10 @@ const questions = {
                     name: '6. Borrar libro'
                 },
                 {
+                    value: '7',
+                    name: '7. Cambiar idioma'
+                },
+                {
                     value: '0',
                     name: '0. Salir'
                 }
@@ -88,6 +92,10 @@ const questions = {
                     name: '6. Delete book'
                 },
                 {
+                    value: '7',
+                    name: '7. Change language'
+                },
+                {
                     value: '0',
                     name: '0. Exit'
                 }
@@ -95,6 +103,27 @@ const questions = {
         }
     ]
 };
+
+const newBooks = {
+    "esp": [
+        {
+            type: 'input',
+            name: 'newBook',
+            message: 'Introduce el título'.green,
+            suffix: ' ' + '(En blanco para cancelar)'.bgBlue,
+            prefix: ''
+        }
+    ],
+    "eng": [
+        {
+            type: 'input',
+            name: 'newBook',
+            message: 'Enter the title'.green,
+            suffix: ' ' + '(Empty to cancel)'.bgBlue,
+            prefix: ''
+        }
+    ]
+}
 
 const inquirerLanguage = async () => {
     console.clear();
@@ -122,7 +151,16 @@ const inquirerMenu = async (lang) => {
     return option;
 }
 
+const inquirerNewBook = async (lang) => {
+    console.clear();
+
+    const {newBook} = await inquirer.prompt(newBooks[lang]);
+
+    return newBook;
+}
+
 module.exports = {
     inquirerMenu,
-    inquirerLanguage
+    inquirerLanguage,
+    inquirerNewBook
 };
