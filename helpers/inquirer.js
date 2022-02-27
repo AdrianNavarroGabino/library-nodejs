@@ -129,6 +129,25 @@ const newBooks = {
     ]
 }
 
+const pauseText = {
+    "esp": [
+        {
+            name: 'pause',
+            type: 'input',
+            prefix: '',
+            message: 'Intro para continuar'.green
+        }
+    ],
+    "eng": [
+        {
+            name: 'pause',
+            type: 'input',
+            prefix: '',
+            message: 'Enter to continue'.green
+        }
+    ]
+}
+
 const inquirerLanguage = async () => {
     console.clear();
 
@@ -163,8 +182,15 @@ const inquirerNewBook = async (lang) => {
     return newBook;
 }
 
+const inquirerPause = async (lang) => {
+    console.log();
+
+    await inquirer.prompt(pauseText[lang]);
+}
+
 module.exports = {
     inquirerMenu,
     inquirerLanguage,
-    inquirerNewBook
+    inquirerNewBook,
+    inquirerPause
 };

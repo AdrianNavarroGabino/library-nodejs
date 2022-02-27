@@ -1,5 +1,7 @@
+const { clear } = require('console');
 const fs = require('fs');
-const { inquirerMenu, inquirerLanguage, inquirerNewBook } = require('./helpers/inquirer');
+require('colors');
+const { inquirerMenu, inquirerLanguage, inquirerNewBook, inquirerPause } = require('./helpers/inquirer');
 data = {}
 
 const getData = () => {
@@ -36,7 +38,9 @@ const chooseOption = async (opt) => {
         case '1': 
             await addBook();
             break;
-        case '2': break;
+        case '2':
+            await listBooks();
+            break;
         case '3': break;
         case '4': break;
         case '5': break;
@@ -96,9 +100,19 @@ const addBook = async () => {
     return newBook
 }
 
+const listBooks = async () => {
+    console.clear();
+    let count = 0;
+    data.books.forEach(b => {
+        var book = b.id.toString().padEnd(6, ' ').red + b.name.substring(0, 50).padEnd(50, ' ').black + (b.owned ? "✅" : "❌");
+        console.log(count % 2 ? book.bgYellow : book.bgCyan);
+        count++;
+    });
+    await inquirerPause(data.language);
+}
+
 const changeLanguage = async () => {
     let language = await selectLanguage();
-    console.log(language + "---------");
     data.language = language;
     fs.writeFileSync("./data/db.json", JSON.stringify(data));
 }
