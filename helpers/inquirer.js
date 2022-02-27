@@ -25,6 +25,8 @@ const questions = {
             type: 'list',
             name: 'option',
             message: '¿Qué quieres hacer?',
+            prefix: '>'.green,
+            //suffix: ' (Usa las flechas)',
             choices: [
                 {
                     value: '1',
@@ -66,6 +68,8 @@ const questions = {
             type: 'list',
             name: 'option',
             message: 'What do you want to do?',
+            prefix: '>'.green,
+            //suffix: ' (Use arrow keys)',
             choices: [
                 {
                     value: '1',

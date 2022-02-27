@@ -1,16 +1,14 @@
 const fs = require('fs');
 const { inquirerMenu, inquirerLanguage, inquirerNewBook } = require('./helpers/inquirer');
+data = {}
 
 const getData = () => {
-    let data;
     try {
         data = JSON.parse(fs.readFileSync("./data/db.json"));
     }
     catch(exception) {
         data = {};
     }
-
-    return data;
 }
 
 const selectLanguage = async () => {
@@ -18,7 +16,7 @@ const selectLanguage = async () => {
     return language;
 }
 
-const menu = async (data) => {
+const menu = async () => {
 
     let opt = '';
 
@@ -26,28 +24,30 @@ const menu = async (data) => {
         opt = await inquirerMenu(data.language);
 
         if(opt != '0') {
-            await chooseOption(opt, data);
+            await chooseOption(opt);
         }
     } while(opt !== '0');
 
     console.clear();
 }
 
-const chooseOption = async (opt, data) => {
+const chooseOption = async (opt) => {
     switch(opt) {
         case '1': 
-            await addBook(data.language, data);
+            await addBook();
             break;
         case '2': break;
         case '3': break;
         case '4': break;
         case '5': break;
         case '6': break;
-        case '7': break;
+        case '7':
+            await changeLanguage();
+            break;
     }
 }
 
-const addBook = async (lang, data) => {
+const addBook = async () => {
     if(!data.books) {
         data.books = [];
     }
@@ -56,14 +56,14 @@ const addBook = async (lang, data) => {
     let repeated;
 
     do {
-        newBook = await inquirerNewBook(lang);
+        newBook = await inquirerNewBook(data.language);
 
-        repeated = data.books.some((b) => newBook == b.name);
+        repeated = data.books.some((b) => newBook && newBook == b.name);
         if(repeated) {
-            if(lang == "esp") {
+            if(data.language == "esp") {
                 console.log("Este libro ya existe");
             }
-            else if(lang == "eng") {
+            else if(data.language == "eng") {
                 console.log("This book already exists");
             }
         }
@@ -96,16 +96,21 @@ const addBook = async (lang, data) => {
     return newBook
 }
 
+const changeLanguage = async () => {
+    let language = await selectLanguage();
+    console.log(language + "---------");
+    data.language = language;
+    fs.writeFileSync("./data/db.json", JSON.stringify(data));
+}
+
 const main = async () => {
-    let data = getData();
+    getData();
 
     if(!data.language) {
-        let language = await selectLanguage();
-        data.language = language;
-        fs.writeFileSync("./data/db.json", JSON.stringify(data));
+        changeLanguage();
     }
 
-    menu(data);
+    menu();
 }
 
 main();
