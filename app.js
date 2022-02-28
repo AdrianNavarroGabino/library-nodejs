@@ -41,8 +41,12 @@ const chooseOption = async (opt) => {
         case '2':
             await listBooks();
             break;
-        case '3': break;
-        case '4': break;
+        case '3': 
+            await listBooksIHave();
+            break;
+        case '4':
+            await listBooksIDontHave();
+            break;
         case '5': break;
         case '6': break;
         case '7':
@@ -104,6 +108,28 @@ const listBooks = async () => {
     console.clear();
     let count = 0;
     data.books.forEach(b => {
+        var book = b.id.toString().padEnd(6, ' ').red + b.name.substring(0, 50).padEnd(50, ' ').black + (b.owned ? "✅" : "❌");
+        console.log(count % 2 ? book.bgYellow : book.bgCyan);
+        count++;
+    });
+    await inquirerPause(data.language);
+}
+
+const listBooksIHave = async () => {
+    console.clear();
+    let count = 0;
+    data.books.filter(b => b.owned).forEach(b => {
+        var book = b.id.toString().padEnd(6, ' ').red + b.name.substring(0, 50).padEnd(50, ' ').black + (b.owned ? "✅" : "❌");
+        console.log(count % 2 ? book.bgYellow : book.bgCyan);
+        count++;
+    });
+    await inquirerPause(data.language);
+}
+
+const listBooksIDontHave = async () => {
+    console.clear();
+    let count = 0;
+    data.books.filter(b => !b.owned).forEach(b => {
         var book = b.id.toString().padEnd(6, ' ').red + b.name.substring(0, 50).padEnd(50, ' ').black + (b.owned ? "✅" : "❌");
         console.log(count % 2 ? book.bgYellow : book.bgCyan);
         count++;
