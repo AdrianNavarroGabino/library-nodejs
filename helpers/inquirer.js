@@ -34,27 +34,31 @@ const questions = {
                 },
                 {
                     value: '2',
-                    name: '2. Listar libros'
+                    name: '2. Buscar libro'
                 },
                 {
                     value: '3',
-                    name: '3. Listar libros que tengo'
+                    name: '3. Listar libros'
                 },
                 {
                     value: '4',
-                    name: '4. Listar libros que me faltan'
+                    name: '4. Listar libros que tengo'
                 },
                 {
                     value: '5',
-                    name: '5. Editar lista'
+                    name: '5. Listar libros que me faltan'
                 },
                 {
                     value: '6',
-                    name: '6. Borrar libro'
+                    name: '6. Editar lista'
                 },
                 {
                     value: '7',
-                    name: '7. Cambiar idioma'
+                    name: '7. Borrar libro'
+                },
+                {
+                    value: '8',
+                    name: '8. Cambiar idioma'
                 },
                 {
                     value: '0',
@@ -77,27 +81,31 @@ const questions = {
                 },
                 {
                     value: '2',
-                    name: '2. List books'
+                    name: '2. Search book'
                 },
                 {
                     value: '3',
-                    name: '3. List books I have'
+                    name: '3. List books'
                 },
                 {
                     value: '4',
-                    name: '4. List books I don\'t have'
+                    name: '4. List books I have'
                 },
                 {
                     value: '5',
-                    name: '5. Edit books'
+                    name: '5. List books I don\'t have'
                 },
                 {
                     value: '6',
-                    name: '6. Delete book'
+                    name: '6. Edit books'
                 },
                 {
                     value: '7',
-                    name: '7. Change language'
+                    name: '7. Delete book'
+                },
+                {
+                    value: '8',
+                    name: '8. Change language'
                 },
                 {
                     value: '0',
@@ -148,6 +156,25 @@ const pauseText = {
     ]
 }
 
+const searchText = {
+    "esp": [
+        {
+            name: 'search',
+            type: 'input',
+            prefix: '>'.green,
+            message: 'Libro'
+        }
+    ],
+    "eng": [
+        {
+            name: 'search',
+            type: 'input',
+            prefix: '>'.green,
+            message: 'Book'
+        }
+    ],
+}
+
 const inquirerLanguage = async () => {
     console.clear();
 
@@ -188,9 +215,15 @@ const inquirerPause = async (lang) => {
     await inquirer.prompt(pauseText[lang]);
 }
 
+const inquirerSearch = async (lang) => {
+    console.log();
+    return await inquirer.prompt(searchText[lang]);
+}
+
 module.exports = {
     inquirerMenu,
     inquirerLanguage,
     inquirerNewBook,
-    inquirerPause
+    inquirerPause,
+    inquirerSearch
 };

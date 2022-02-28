@@ -1,7 +1,7 @@
 const { clear } = require('console');
 const fs = require('fs');
 require('colors');
-const { inquirerMenu, inquirerLanguage, inquirerNewBook, inquirerPause } = require('./helpers/inquirer');
+const { inquirerMenu, inquirerLanguage, inquirerNewBook, inquirerPause, inquirerSearch } = require('./helpers/inquirer');
 data = {}
 
 const getData = () => {
@@ -39,17 +39,20 @@ const chooseOption = async (opt) => {
             await addBook();
             break;
         case '2':
+            await searchBook();
+            break;
+        case '3':
             await listBooks();
             break;
-        case '3': 
+        case '4': 
             await listBooksIHave();
             break;
-        case '4':
+        case '5':
             await listBooksIDontHave();
             break;
-        case '5': break;
         case '6': break;
-        case '7':
+        case '7': break;
+        case '8':
             await changeLanguage();
             break;
     }
@@ -102,6 +105,31 @@ const addBook = async () => {
     }
 
     return newBook
+}
+
+const searchBook = async () => {
+    console.clear();
+
+    const search = (await inquirerSearch(data.language)).search
+                                                        .toLowerCase()
+                                                        .trim()
+                                                        .replaceAll(/(\.|\,)/ig, " ")
+                                                        .split(" ")
+                                                        .filter(e => e.length > 2 || !isNaN(e));
+
+    if(search && search.length > 0) {
+        let count = 0;
+
+        data.books
+            .filter(b => search.some(e => (b.id + " " + b.name.toLowerCase()).includes(e)))
+            .forEach(b => {
+                var book = b.id.toString().padEnd(6, ' ').red + b.name.substring(0, 50).padEnd(50, ' ').black + (b.owned ? "✅" : "❌");
+                console.log(count % 2 ? book.bgYellow : book.bgCyan);
+                count++;
+        });
+
+        await inquirerPause(data.language);
+    }
 }
 
 const listBooks = async () => {
