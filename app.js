@@ -1,7 +1,13 @@
 const { clear } = require('console');
 const fs = require('fs');
 require('colors');
-const { inquirerMenu, inquirerLanguage, inquirerNewBook, inquirerPause, inquirerSearch, inquirerEdit } = require('./helpers/inquirer');
+const { inquirerMenu,
+    inquirerLanguage,
+    inquirerNewBook,
+    inquirerPause,
+    inquirerSearch,
+    inquirerEdit,
+    inquirerDelete } = require('./helpers/inquirer');
 data = {}
 
 const getData = () => {
@@ -53,7 +59,9 @@ const chooseOption = async (opt) => {
         case '6':
             await editBooks();
             break;
-        case '7': break;
+        case '7':
+            await deleteBook();
+            break;
         case '8':
             await changeLanguage();
             break;
@@ -102,7 +110,8 @@ const addBook = async () => {
         }
 
         data.books.push({id: id, name: newBook, owned: false});
-        data.books.sort((b1, b2) => b1.id != b2.id ? b1.id - b2.id : b1.name - b2.name);
+        data.books.sort((b1, b2) => b1.id != b2.id ? b1.id - b2.id :
+                                                    b1.name - b2.name);
         fs.writeFileSync("./data/db.json", JSON.stringify(data));
     }
 
@@ -113,19 +122,22 @@ const searchBook = async () => {
     console.clear();
 
     const search = (await inquirerSearch(data.language)).search
-                                                        .toLowerCase()
-                                                        .trim()
-                                                        .replaceAll(/(\.|\,)/ig, " ")
-                                                        .split(" ")
-                                                        .filter(e => e.length > 2 || !isNaN(e));
+                                    .toLowerCase()
+                                    .trim()
+                                    .replaceAll(/(\.|\,)/ig, " ")
+                                    .split(" ")
+                                    .filter(e => e.length > 2 || !isNaN(e));
 
     if(search && search.length > 0) {
         let count = 0;
 
         data.books
-            .filter(b => search.some(e => (b.id + " " + b.name.toLowerCase()).includes(e)))
+            .filter(b => search.some(e => (b.id + " " + b.name.toLowerCase())
+                                                                .includes(e)))
             .forEach(b => {
-                var book = b.id.toString().padEnd(6, ' ').red + b.name.substring(0, 50).padEnd(50, ' ').black + (b.owned ? "✅" : "❌");
+                var book = b.id.toString().padEnd(6, ' ').red +
+                            b.name.substring(0, 50).padEnd(50, ' ').black +
+                            (b.owned ? "✅" : "❌");
                 console.log(count % 2 ? book.bgYellow : book.bgCyan);
                 count++;
         });
@@ -138,7 +150,9 @@ const listBooks = async () => {
     console.clear();
     let count = 0;
     data.books.forEach(b => {
-        var book = b.id.toString().padEnd(6, ' ').red + b.name.substring(0, 50).padEnd(50, ' ').black + (b.owned ? "✅" : "❌");
+        var book = b.id.toString().padEnd(6, ' ').red +
+                    b.name.substring(0, 50).padEnd(50, ' ').black +
+                    (b.owned ? "✅" : "❌");
         console.log(count % 2 ? book.bgYellow : book.bgCyan);
         count++;
     });
@@ -149,7 +163,9 @@ const listBooksIHave = async () => {
     console.clear();
     let count = 0;
     data.books.filter(b => b.owned).forEach(b => {
-        var book = b.id.toString().padEnd(6, ' ').red + b.name.substring(0, 50).padEnd(50, ' ').black + (b.owned ? "✅" : "❌");
+        var book = b.id.toString().padEnd(6, ' ').red +
+                    b.name.substring(0, 50).padEnd(50, ' ').black +
+                    (b.owned ? "✅" : "❌");
         console.log(count % 2 ? book.bgYellow : book.bgCyan);
         count++;
     });
@@ -160,7 +176,9 @@ const listBooksIDontHave = async () => {
     console.clear();
     let count = 0;
     data.books.filter(b => !b.owned).forEach(b => {
-        var book = b.id.toString().padEnd(6, ' ').red + b.name.substring(0, 50).padEnd(50, ' ').black + (b.owned ? "✅" : "❌");
+        var book = b.id.toString().padEnd(6, ' ').red +
+                    b.name.substring(0, 50).padEnd(50, ' ').black +
+                    (b.owned ? "✅" : "❌");
         console.log(count % 2 ? book.bgYellow : book.bgCyan);
         count++;
     });
@@ -169,13 +187,30 @@ const listBooksIDontHave = async () => {
 
 const editBooks = async () => {
     const response = await inquirerEdit(data.language, data.books.map(b => {
-        return {name: `${b.id.toString().padEnd(6, ' ').red}${b.name}`, checked: b.owned, value: `${b.id} ${b.name}`};
+        return {name: `${b.id.toString().padEnd(6, ' ').red}${b.name}`,
+                checked: b.owned,
+                value: `${b.id} ${b.name}`};
     }));
 
     fs.writeFileSync("./data/db_backup.json", JSON.stringify(data));
 
-    data.books.forEach(b => b.owned = response.some(e => e == `${b.id} ${b.name}`));
+    data.books.forEach(b => b.owned = response
+                                        .some(e => e == `${b.id} ${b.name}`));
     fs.writeFileSync("./data/db.json", JSON.stringify(data));
+}
+
+const deleteBook = async() => {
+    const response = await inquirerDelete(data.language, data.books.map(b => {
+        return {name: `${b.id.toString().padEnd(6, ' ').red}${b.name}`,
+                value: `${b.id} ${b.name}`};
+    }).concat([{name: data.language == 'esp' ? 'Cancelar' :
+            (data.language == 'eng' ? 'Cancel' : ''), value: 'cancelar'}]));
+
+    if(response != 'cancelar') {
+        fs.writeFileSync("./data/db_backup.json", JSON.stringify(data));
+        data.books = data.books.filter(b => `${b.id} ${b.name}` != response);
+        fs.writeFileSync("./data/db.json", JSON.stringify(data));
+    }
 }
 
 const changeLanguage = async () => {

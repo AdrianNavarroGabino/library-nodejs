@@ -229,14 +229,34 @@ const inquirerEdit = async (lang, books) => {
                 prefix: '',
                 suffix: '',
                 type: 'checkbox',
-                message: lang == 'esp' ? 'Libros' : (lang == 'eng' ? 'Books' : ''),
+                message: lang == 'esp' ? 'Libros' :
+                                (lang == 'eng' ? 'Books' : ''),
                 choices: books
             }
         ]
     );
 
     return editBooks;
-} 
+}
+
+const inquirerDelete = async (lang, books) => {
+    console.log();
+    const {deleteBook} = await inquirer.prompt(
+        [
+            {
+                name: 'deleteBook',
+                prefix: '',
+                suffix: '',
+                type: 'list',
+                message: lang == 'esp' ? 'Libros' :
+                                (lang == 'eng' ? 'Books' : ''),
+                choices: books
+            }
+        ]
+    );
+
+    return deleteBook;
+}
 
 module.exports = {
     inquirerMenu,
@@ -244,5 +264,6 @@ module.exports = {
     inquirerNewBook,
     inquirerPause,
     inquirerSearch,
-    inquirerEdit
+    inquirerEdit,
+    inquirerDelete
 };
