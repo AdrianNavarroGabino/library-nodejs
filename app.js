@@ -1,7 +1,7 @@
 const { clear } = require('console');
 const fs = require('fs');
 require('colors');
-const { inquirerMenu, inquirerLanguage, inquirerNewBook, inquirerPause, inquirerSearch } = require('./helpers/inquirer');
+const { inquirerMenu, inquirerLanguage, inquirerNewBook, inquirerPause, inquirerSearch, inquirerEdit } = require('./helpers/inquirer');
 data = {}
 
 const getData = () => {
@@ -50,7 +50,9 @@ const chooseOption = async (opt) => {
         case '5':
             await listBooksIDontHave();
             break;
-        case '6': break;
+        case '6':
+            await editBooks();
+            break;
         case '7': break;
         case '8':
             await changeLanguage();
@@ -163,6 +165,17 @@ const listBooksIDontHave = async () => {
         count++;
     });
     await inquirerPause(data.language);
+}
+
+const editBooks = async () => {
+    const response = await inquirerEdit(data.language, data.books.map(b => {
+        return {name: `${b.id.toString().padEnd(6, ' ').red}${b.name}`, checked: b.owned, value: `${b.id} ${b.name}`};
+    }));
+
+    fs.writeFileSync("./data/db_backup.json", JSON.stringify(data));
+
+    data.books.forEach(b => b.owned = response.some(e => e == `${b.id} ${b.name}`));
+    fs.writeFileSync("./data/db.json", JSON.stringify(data));
 }
 
 const changeLanguage = async () => {

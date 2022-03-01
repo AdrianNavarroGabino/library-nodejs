@@ -220,10 +220,29 @@ const inquirerSearch = async (lang) => {
     return await inquirer.prompt(searchText[lang]);
 }
 
+const inquirerEdit = async (lang, books) => {
+    console.log();
+    const {editBooks} = await inquirer.prompt(
+        [
+            {
+                name: 'editBooks',
+                prefix: '',
+                suffix: '',
+                type: 'checkbox',
+                message: lang == 'esp' ? 'Libros' : (lang == 'eng' ? 'Books' : ''),
+                choices: books
+            }
+        ]
+    );
+
+    return editBooks;
+} 
+
 module.exports = {
     inquirerMenu,
     inquirerLanguage,
     inquirerNewBook,
     inquirerPause,
-    inquirerSearch
+    inquirerSearch,
+    inquirerEdit
 };
