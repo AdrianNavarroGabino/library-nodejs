@@ -37,6 +37,8 @@ const menu = async () => {
     } while(opt !== '0');
 
     console.clear();
+
+    return;
 }
 
 const chooseOption = async (opt) => {
@@ -124,7 +126,7 @@ const searchBook = async () => {
     const search = (await inquirerSearch(data.language)).search
                                     .toLowerCase()
                                     .trim()
-                                    .replaceAll(/(\.|\,)/ig, " ")
+                                    .replace(/(\.|\,)/ig, " ")
                                     .split(" ")
                                     .filter(e => e.length > 2 || !isNaN(e));
 
