@@ -225,7 +225,7 @@ const main = async () => {
     getData();
 
     if(!data.language) {
-        changeLanguage();
+        await changeLanguage();
     }
 
     menu();
