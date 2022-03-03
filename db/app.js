@@ -1,12 +1,8 @@
-const main = async () => {
-    const { data } = require('./data');
-    const { Client } = require('pg');
-    const client = new Client(data);
-    await client.connect();
+const express = require('express');
+const bodyParser = require('body-parser');
+const books = require('./routers/book');
+let app = express();
 
-    const res = await client.query('select * from test');
-    console.log(res.rows[0]);
-    await client.end();
-}
-
-main();
+app.use(bodyParser.json());
+app.use('/', books);
+app.listen(8090);
