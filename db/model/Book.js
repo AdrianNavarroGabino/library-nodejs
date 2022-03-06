@@ -52,4 +52,18 @@ module.exports = class Book {
         
         return books.map(book => new Book(book));
     }
+
+    static updateBook = async (id, owned) => {
+        let extra = "id: " + id + " owned: " + owned;
+        try { 
+            let book = (await connection.query('select * from books where id = $1', [id])).rows[0];
+            extra += " book: yes";
+            const res = await connection.query('update books set owned = $1 where id = $2', [owned, id]);
+            book.owned = owned;
+            return {error: false, result: res, extra};
+        }
+        catch(e) {
+            return {error: true, result: e, extra};
+        }
+    }
 }
