@@ -66,4 +66,9 @@ module.exports = class Book {
             return {error: true, result: e, extra};
         }
     }
+
+    static deleteBook = async id => {
+        const res = await connection.query('delete from books where id = $1', [id]);
+        return {error: res.rowCount > 0, result: res};
+    }
 }

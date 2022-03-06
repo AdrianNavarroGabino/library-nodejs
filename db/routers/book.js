@@ -23,4 +23,8 @@ router.put('/books/:id', async (req, res) => {
     res.send(await Book.updateBook(req.params.id, req.body.owned));
 });
 
+router.delete('/books/:id', async (req, res) => {
+    res.send(await Book.deleteBook(req.params.id));
+});
+
 module.exports = router;
